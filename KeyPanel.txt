@@ -16,7 +16,6 @@ local blurEffect = nil
 local notificationTimers = {}
 local linksPanelOpen = false
 local selectedLinkSite = nil
-local notificationZIndex = 1
 
 local function createBlur()
 	if not blurEffect then
@@ -44,8 +43,6 @@ end
 
 local function showNotification(title, iconId, duration)
 	local notificationScreenGui = createNotificationGui()
-	notificationZIndex = notificationZIndex + 1
-	local currentZIndex = notificationZIndex
 	
 	local notificationGui = Instance.new("Frame")
 	notificationGui.Name = "NotificationGui"
@@ -54,22 +51,20 @@ local function showNotification(title, iconId, duration)
 	notificationGui.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
 	notificationGui.BorderSizePixel = 2
 	notificationGui.BorderColor3 = Color3.fromRGB(128, 128, 128)
-	notificationGui.ZIndex = currentZIndex
 	notificationGui.Parent = notificationScreenGui
 
 	local notificationIcon = Instance.new("ImageLabel")
 	notificationIcon.Name = "NotificationIcon"
-	notificationIcon.Size = UDim2.new(0.2, 0, 0.6, 0)
+	notificationIcon.Size = UDim2.new(0.22, 0, 0.7, 0)
 	notificationIcon.Position = UDim2.new(0.05, 0, 0.2, 0)
 	notificationIcon.BackgroundTransparency = 1
 	notificationIcon.Image = "rbxassetid://" .. iconId
-	notificationIcon.ZIndex = currentZIndex
 	notificationIcon.Parent = notificationGui
 
 	local notificationLabel = Instance.new("TextLabel")
 	notificationLabel.Name = "NotificationLabel"
 	notificationLabel.Size = UDim2.new(0.6, 0, 0.898, 0)
-	notificationLabel.Position = UDim2.new(0.25, 0, 0.15, 0)
+	notificationLabel.Position = UDim2.new(0.25, 0, 0.06, 0)
 	notificationLabel.BackgroundTransparency = 1
 	notificationLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
 	notificationLabel.TextSize = 14
@@ -77,17 +72,14 @@ local function showNotification(title, iconId, duration)
 	notificationLabel.Text = title
 	notificationLabel.TextWrapped = true
 	notificationLabel.TextXAlignment = Enum.TextXAlignment.Left
-	notificationLabel.TextYAlignment = Enum.TextYAlignment.Center
-	notificationLabel.ZIndex = currentZIndex
 	notificationLabel.Parent = notificationGui
 
 	local progressLine = Instance.new("Frame")
 	progressLine.Name = "ProgressLine"
-	progressLine.Size = UDim2.new(0, 0, 0.07, 0)
+	progressLine.Size = UDim2.new(1, 0, 0.045, 0)
 	progressLine.Position = UDim2.new(0, 0, 1, 0)
 	progressLine.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
 	progressLine.BorderSizePixel = 0
-	progressLine.ZIndex = currentZIndex
 	progressLine.Parent = notificationGui
 
 	local startTime = tick()
@@ -98,8 +90,7 @@ local function showNotification(title, iconId, duration)
 		startTime = startTime,
 		duration = duration,
 		gui = notificationGui,
-		screenGui = notificationScreenGui,
-		zIndex = currentZIndex
+		screenGui = notificationScreenGui
 	}
 
 	local slideInTween = game:GetService("TweenService"):Create(
@@ -119,12 +110,31 @@ local function showNotification(title, iconId, duration)
 		local elapsed = tick() - notificationTimers[notificationId].startTime
 		local progress = math.min(elapsed / notificationTimers[notificationId].duration, 1)
 
-		if notificationGui and notificationGui.Parent and notificationTimers[notificationId].zIndex == currentZIndex then
-			progressLine.Size = UDim2.new(totalWidth * progress, 0, 0.07, 0)
+		if notificationGui and notificationGui.Parent then
+			progressLine.Size = UDim2.new(totalWidth * progress, 0, 0.045, 0)
 		end
 
 		if progress >= 1 then
 			progressConnection:Disconnect()
+
+			if notificationGui and notificationGui.Parent then
+				local slideOutTween = game:GetService("TweenService"):Create(
+					notificationGui,
+					TweenInfo.new(0.3, Enum.EasingStyle.Quad, Enum.EasingDirection.In),
+					{Position = UDim2.new(0.99, 0, 0.8, 0)}
+				)
+				slideOutTween:Play()
+
+				slideOutTween.Completed:Connect(function()
+					if notificationGui then
+						notificationGui:Destroy()
+					end
+					if notificationScreenGui then
+						notificationScreenGui:Destroy()
+					end
+					notificationTimers[notificationId] = nil
+				end)
+			end
 		end
 	end)
 end
