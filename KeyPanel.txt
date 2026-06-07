@@ -46,8 +46,8 @@ local function showNotification(title, iconId, duration)
 	
 	local notificationGui = Instance.new("Frame")
 	notificationGui.Name = "NotificationGui"
-	notificationGui.Size = UDim2.new(0, 300, 0, 60)
-	notificationGui.Position = UDim2.new(1, 20, 1, -100)
+	notificationGui.Size = UDim2.new(0.25, 0, 0.12, 0)
+	notificationGui.Position = UDim2.new(0.99, 0, 0.85, 0)
 	notificationGui.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
 	notificationGui.BorderSizePixel = 2
 	notificationGui.BorderColor3 = Color3.fromRGB(128, 128, 128)
@@ -55,16 +55,16 @@ local function showNotification(title, iconId, duration)
 
 	local notificationIcon = Instance.new("ImageLabel")
 	notificationIcon.Name = "NotificationIcon"
-	notificationIcon.Size = UDim2.new(0, 40, 0, 40)
-	notificationIcon.Position = UDim2.new(0, 10, 0.5, -20)
+	notificationIcon.Size = UDim2.new(0.25, 0, 0.6, 0)
+	notificationIcon.Position = UDim2.new(0.05, 0, 0.2, 0)
 	notificationIcon.BackgroundTransparency = 1
 	notificationIcon.Image = "rbxassetid://" .. iconId
 	notificationIcon.Parent = notificationGui
 
 	local notificationLabel = Instance.new("TextLabel")
 	notificationLabel.Name = "NotificationLabel"
-	notificationLabel.Size = UDim2.new(1, -60, 1, 0)
-	notificationLabel.Position = UDim2.new(0, 50, 0, 0)
+	notificationLabel.Size = UDim2.new(0.65, 0, 0.9, 0)
+	notificationLabel.Position = UDim2.new(0.32, 0, 0.05, 0)
 	notificationLabel.BackgroundTransparency = 1
 	notificationLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
 	notificationLabel.TextSize = 14
@@ -76,14 +76,14 @@ local function showNotification(title, iconId, duration)
 
 	local progressLine = Instance.new("Frame")
 	progressLine.Name = "ProgressLine"
-	progressLine.Size = UDim2.new(0, 0, 0, 2)
+	progressLine.Size = UDim2.new(0, 0, 0.07, 0)
 	progressLine.Position = UDim2.new(0, 0, 1, 0)
 	progressLine.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
 	progressLine.BorderSizePixel = 0
 	progressLine.Parent = notificationGui
 
 	local startTime = tick()
-	local totalWidth = 300
+	local totalWidth = 1
 	local notificationId = tostring(math.random(100000, 999999))
 
 	notificationTimers[notificationId] = {
@@ -96,7 +96,7 @@ local function showNotification(title, iconId, duration)
 	local slideInTween = game:GetService("TweenService"):Create(
 		notificationGui,
 		TweenInfo.new(0.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
-		{Position = UDim2.new(1, -320, 1, -100)}
+		{Position = UDim2.new(0.74, 0, 0.85, 0)}
 	)
 	slideInTween:Play()
 
@@ -111,7 +111,7 @@ local function showNotification(title, iconId, duration)
 		local progress = math.min(elapsed / notificationTimers[notificationId].duration, 1)
 
 		if notificationGui and notificationGui.Parent then
-			progressLine.Size = UDim2.new(0, totalWidth * progress, 0, 2)
+			progressLine.Size = UDim2.new(totalWidth * progress, 0, 0.07, 0)
 		end
 
 		if progress >= 1 then
@@ -121,7 +121,7 @@ local function showNotification(title, iconId, duration)
 				local slideOutTween = game:GetService("TweenService"):Create(
 					notificationGui,
 					TweenInfo.new(0.3, Enum.EasingStyle.Quad, Enum.EasingDirection.In),
-					{Position = UDim2.new(1, 20, 1, -100)}
+					{Position = UDim2.new(0.99, 0, 0.85, 0)}
 				)
 				slideOutTween:Play()
 
