@@ -205,6 +205,7 @@ headerFrame.Parent = panelFrame
 
 local logoImage = Instance.new("ImageLabel")
 logoImage.Name = "LogoImage"
+logoImage.AnchorPoint = Vector2.new(0.5, 0.5)
 logoImage.Size = UDim2.new(0.14, 0, 0.8, 0)
 logoImage.Position = UDim2.new(0.02, 0, 0.1, 0)
 logoImage.BackgroundTransparency = 0
@@ -362,7 +363,7 @@ local function closeLinksPanel()
 		local shrinkTween = game:GetService("TweenService"):Create(
 			linksPanel,
 			TweenInfo.new(0.4, Enum.EasingStyle.Quad, Enum.EasingDirection.In),
-			{Size = UDim2.new(0, 0, 0.89, 0)}
+			{Size = UDim2.new(0, 0, 0.889, 0)}
 		)
 		shrinkTween:Play()
 
@@ -432,7 +433,7 @@ local function createLinksPanel()
 	local linksCloseButton = Instance.new("TextButton")
 	linksCloseButton.Name = "LinksCloseButton"
 	linksCloseButton.Size = UDim2.new(1, 0, 0.16, 0)
-	linksCloseButton.Position = UDim2.new(0, 0, 0, 0)
+	linksCloseButton.Position = UDim2.new(0.4, 0, 0.449, 0)
 	linksCloseButton.BackgroundTransparency = 1
 	linksCloseButton.TextColor3 = Color3.fromRGB(255, 255, 255)
 	linksCloseButton.TextSize = 24
