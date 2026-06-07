@@ -113,29 +113,6 @@ local function showNotification(title, iconId, duration)
 		if notificationGui and notificationGui.Parent then
 			progressLine.Size = UDim2.new(totalWidth * progress, 0, 0.07, 0)
 		end
-
-		if progress >= 1 then
-			progressConnection:Disconnect()
-
-			if notificationGui and notificationGui.Parent then
-				local slideOutTween = game:GetService("TweenService"):Create(
-					notificationGui,
-					TweenInfo.new(0.3, Enum.EasingStyle.Quad, Enum.EasingDirection.In),
-					{Position = UDim2.new(0.99, 0, 0.85, 0)}
-				)
-				slideOutTween:Play()
-
-				slideOutTween.Completed:Connect(function()
-					if notificationGui then
-						notificationGui:Destroy()
-					end
-					if notificationScreenGui then
-						notificationScreenGui:Destroy()
-					end
-					notificationTimers[notificationId] = nil
-				end)
-			end
-		end
 	end)
 end
 
