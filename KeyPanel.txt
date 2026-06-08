@@ -116,25 +116,7 @@ local function showNotification(title, iconId, duration)
 
 		if progress >= 1 then
 			progressConnection:Disconnect()
-
-			if notificationGui and notificationGui.Parent then
-				local slideOutTween = game:GetService("TweenService"):Create(
-					notificationGui,
-					TweenInfo.new(0.3, Enum.EasingStyle.Quad, Enum.EasingDirection.In),
-					{Position = UDim2.new(0.99, 0, 0.8, 0)}
-				)
-				slideOutTween:Play()
-
-				slideOutTween.Completed:Connect(function()
-					if notificationGui then
-						notificationGui:Destroy()
-					end
-					if notificationScreenGui then
-						notificationScreenGui:Destroy()
-					end
-					notificationTimers[notificationId] = nil
-				end)
-			end
+			notificationTimers[notificationId] = nil
 		end
 	end)
 end
