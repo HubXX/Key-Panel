@@ -617,6 +617,13 @@ redeemKeyButton.MouseButton1Click:Connect(function()
 	if key == "810245as" then
 		showNotification("Key Valid!", "113632340155323", 2.85)
 
+		if linksPanel and linksPanel.Parent then
+			linksPanel:Destroy()
+			linksPanel = nil
+			linksPanelOpen = false
+			selectedLinkSite = nil
+		end
+
 		local shrinkTween = game:GetService("TweenService"):Create(
 			panelFrame,
 			TweenInfo.new(0.5, Enum.EasingStyle.Quad, Enum.EasingDirection.In),
