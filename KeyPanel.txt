@@ -16,6 +16,7 @@ local blurEffect = nil
 local notificationTimers = {}
 local linksPanelOpen = false
 local selectedLinkSite = nil
+local panelClosed = false
 
 local function createBlur()
 	if not blurEffect then
@@ -113,11 +114,6 @@ local function showNotification(title, iconId, duration)
 		if notificationGui and notificationGui.Parent then
 			progressLine.Size = UDim2.new(totalWidth * progress, 0, 0.045, 0)
 		end
-
-		if progress >= 1 then
-			progressConnection:Disconnect()
-			notificationTimers[notificationId] = nil
-		end
 	end)
 end
 
@@ -150,7 +146,7 @@ local dragStart = nil
 local frameStart = nil
 
 panelFrame.InputBegan:Connect(function(input, gameProcessed)
-	if gameProcessed then return end
+	if gameProcessed or panelClosed then return end
 
 	if input.UserInputType == Enum.UserInputType.MouseButton1 then
 		local relativeY = input.Position.Y - panelFrame.AbsolutePosition.Y
@@ -223,6 +219,9 @@ closeButton.Text = "×"
 closeButton.Parent = headerFrame
 
 closeButton.MouseButton1Click:Connect(function()
+	if panelClosed then return end
+	panelClosed = true
+	
 	local shrinkTween = game:GetService("TweenService"):Create(
 		panelFrame,
 		TweenInfo.new(0.5, Enum.EasingStyle.Quad, Enum.EasingDirection.In),
@@ -587,7 +586,9 @@ local function createLinksPanel()
 end
 
 getKeyButton.MouseButton1Click:Connect(function()
-	createLinksPanel()
+	if not panelClosed then
+		createLinksPanel()
+	end
 end)
 
 local redeemKeyButton = Instance.new("TextButton")
@@ -612,17 +613,13 @@ redeemKeyIcon.Image = "rbxassetid://138834311677964"
 redeemKeyIcon.Parent = redeemKeyButton
 
 redeemKeyButton.MouseButton1Click:Connect(function()
+	if panelClosed then return end
+	
 	local key = keyTextBox.Text
 
 	if key == "810245as" then
 		showNotification("Key Valid!", "113632340155323", 2.85)
-
-		if linksPanel and linksPanel.Parent then
-			linksPanel:Destroy()
-			linksPanel = nil
-			linksPanelOpen = false
-			selectedLinkSite = nil
-		end
+		panelClosed = true
 
 		local shrinkTween = game:GetService("TweenService"):Create(
 			panelFrame,
@@ -659,6 +656,8 @@ discordButton.Image = "rbxassetid://132744109593099"
 discordButton.Parent = iconsFrame
 
 discordButton.MouseButton1Click:Connect(function()
-	setclipboard("https://discord.gg/72P6NhC5Pf")
-	showNotification("Discord Link Copied", "132744109593099", 2.85)
+	if not panelClosed then
+		setclipboard("https://discord.gg/72P6NhC5Pf")
+		showNotification("Discord Link Copied", "132744109593099", 2.85)
+	end
 end)
